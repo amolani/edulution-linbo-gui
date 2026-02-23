@@ -1,0 +1,8 @@
+CMakeLists.txt.user*
+build/
+debian/linuxmuster-linbo-gui7
+debian/tmp.*
+/*.json
+.vscode
+archives
+resources/translations/linbo-gui/*.qm

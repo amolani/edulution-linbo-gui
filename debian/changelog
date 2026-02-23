@@ -1,0 +1,249 @@
+linuxmuster-linbo-gui7 (7.3.3) lmn73; urgency=medium
+
+  * fix: hdd and cache size in edge cases (#95)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 04 Oct 2025 13:40:23 +0100
+
+linuxmuster-linbo-gui7 (7.3.2) lmn73; urgency=medium
+
+  * fix: hdd and cache size in edge cases (#95)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 04 Oct 2025 13:07:23 +0100
+
+linuxmuster-linbo-gui7 (7.3.1) lmn73; urgency=medium
+
+  * New package for LMN 7.3
+
+ -- Arnaud Kientz <arnaud@linuxmuster.net>  Sat, 03 May 2025 10:23:12 +0200
+
+linuxmuster-linbo-gui7 (7.2.5) lmn72; urgency=medium
+
+  * feat: allow linuxmuster-cachingserver-linbo7 as alternative dependency (#93)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Thu, 04 Jul 2024 17:29:23 +0100
+
+linuxmuster-linbo-gui7 (7.2.4) lmn72; urgency=medium
+
+  * fix: show os icon on errors 
+  * fix: focus cancel button on autostart
+
+ -- Dorian Zedler <dorian@itsblue.de>  Sat, 23 Sep 2023 12:44:23 +0100
+
+linuxmuster-linbo-gui7 (7.2.3) lmn72; urgency=low
+
+  * fix: show correct os icon (#90) 
+  * feat: skip autostart delay if os button is pressed (#62) 
+
+ -- Dorian Zedler <dorian@itsblue.de>  Sat, 23 Sep 2023 09:33:17 +0100
+
+linuxmuster-linbo-gui7 (7.2.2) lmn72; urgency=low
+
+  * fix: could not load default translation file
+
+ -- Dorian Zedler <dorian@itsblue.de>  Wed, 15 Feb 2023 16:49:22 +0100
+
+linuxmuster-linbo-gui7 (7.2.1) lmn72; urgency=low
+
+  * remove backgroundcolor start.conf option
+  * support new theming structure
+
+ -- Dorian Zedler <dorian@itsblue.de>  Thu, 02 Feb 2023 13:17:22 +0100
+
+linuxmuster-linbo-gui7 (7.2.0) lmn72; urgency=low
+
+  * Support differential imaging
+
+ -- Dorian Zedler <dorian@itsblue.de>  Sat, 07 Jan 2023 09:36:22 +0100
+
+linuxmuster-linbo-gui7 (7.1.0) lmn72; urgency=medium
+
+  * Move to Qt6
+  * Move to Ubuntu 22.04 as build environment
+  * When cancelling an action with the logout flag, the user is now logged out
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 26 Nov 2021 17:36:22 +0100
+
+linuxmuster-linbo-gui7 (7.0.5) lmn71; urgency=medium
+
+  * Fix: GuiDisabled not working
+
+ -- Dorian Zedler <dorian@itsblue.de>  Tue, 12 Apr 2022 17:36:22 +0100
+
+linuxmuster-linbo-gui7 (7.0.4) lmn71; urgency=medium
+
+  * Fix crash when trying to create a new image wihout a baseimage 
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 26 Nov 2021 17:36:22 +0100
+
+linuxmuster-linbo-gui7 (7.0.3-1) lmn71; urgency=low
+
+  * move to lmn71 repo
+
+ -- Dorian Zedler <dorian@itsblue.de>  Thu, 26 Nov 2021 09:15:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.3) lmn7; urgency=low
+
+  * Fix Kernel append options
+
+ -- Dorian Zedler <dorian@itsblue.de>  Thu, 21 Jul 2021 09:15:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.2) lmn7; urgency=low
+
+  * Fix sizes on very very very very small displays (<200px)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Thu, 20 May 2021 13:00:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.1-release) lmn7; urgency=low
+
+  * Implemented "AutoPartition" and "AutoInitcache" functionality (#56)
+  * Improoved keyboard only usage (#59)
+  * Error logs are now fully displayed in a scrollable container (#55)
+  * Console processes are killed when the console window is closed (#57)
+  * Add start.conf option "ClientDetailsVisibleByDefault" to make the details visible by default (#54)
+  * Don't hide the client details when some task (eg. upload image) starts (#54)
+  * Fix registering clients (#53)
+  * Fix segfault issue from rc01
+  * Hide "partition" and "init cache" buttons when not registered
+  * Add theming engine
+
+ -- Dorian Zedler <dorian@itsblue.de>  Thu, 20 May 2021 13:00:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.1-rc03) lmn7-testing; urgency=low
+
+  * Add theming engine
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 23 Mar 2021 16:30:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.1-rc02) lmn7-testing; urgency=low
+
+  * Fix segfault issue from rc01
+  * Hide "partition" and "init cache" buttons when not registered
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 23 Mar 2021 16:30:00 +0100 
+
+linuxmuster-linbo-gui7 (7.0.1-rc01) lmn7-testing; urgency=low
+
+  * Implemented "AutoPartition" and "AutoInitcache" functionality (#56)
+  * Improoved keyboard only usage (#59)
+  * Error logs are now fully displayed in a scrollable container (#55)
+  * Console processes are killed when the console window is closed (#57)
+  * Add start.conf option "ClientDetailsVisibleByDefault" to make the details visible by default (#54)
+  * Don't hide the client details when some task (eg. upload image) starts (#54)
+  * Fix registering clients (#53)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 23 Mar 2021 13:30:00 +0100 
+
+linuxmuster-linbo-gui7 (7.0.0) lmn7; urgency=low
+
+  * Initial release to stable repo
+  
+ -- Dorian Zedler <dorian@itsblue.de>  Tue, 3 Mar 2021 10:13:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-rc06) lmn7-testing; urgency=low
+
+  * Fix critical Error that lead to the GUI crashing in many scenarios (#51)
+  
+ -- Dorian Zedler <dorian@itsblue.de>  Tue, 3 Mar 2021 10:13:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-rc05) lmn7-testing; urgency=low
+
+  * Update dependencies (#50)
+  * Fixed an Error that made the gui crash on unregistered clients (#49)
+  * Fixed graphical bugs in legacy layout (#48)
+  * Fixed graphical issues with the not registered text (#47)
+  * The image name field in the image creation dialog is now disabled when replacing an existing image (#46)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Sun, 1 Mar 2021 15:11:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-rc04) lmn7-testing; urgency=low
+
+  * Added tooltips to all buttons and made them look better
+  * Some improovements to terminal (#45)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Sun, 7 Feb 2021 08:30:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-rc03) lmn7-testing; urgency=low
+
+  * Added tooltips to startaction buttons (#42)
+  * Disable gui when in remote mode (#43)
+  * Add a tiny hint "F1" to remind people to press F1 to show client details (#44)
+
+ -- Dorian Zedler <dorian@itsblue.de>  Fri, 5 Feb 2021 19:01:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-rc02) lmn7-testing; urgency=low
+
+  * Fixed issues with images containing uppercase letters (#41)
+  * Changed default background color (#40)
+  * Added default OS icon (#39)
+  * Other minor improvements
+
+ -- Dorian Zedler <dorian@itsblue.de>  Tue, 23 Jan 2021 22:55:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-rc01) lmn7-testing; urgency=low
+
+  * Improvements to terminal
+  * Implement root-timeout
+  * Minor fixes
+
+ -- Dorian Zedler <dorian@itsblue.de>  Tue, 23 Jan 2021 22:55:00 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-Beta02) lmn7-testing; urgency=low
+
+  * CodeCrafter912:
+    - Fixed isse that wont let the GUI start
+    - Fixed issues that made the Terminal dialog crash sometimes
+
+ -- Dorian Zedler <dorian@itsblue.de>  Sat, 23 Jan 2021 11:01:44 +0100
+
+linuxmuster-linbo-gui7 (7.0.0-Beta01) lmn7-testing; urgency=low
+
+  * CodeCrafter912:
+    - Added variable background color
+    - Implemented image upload
+    - some more minor fixes
+
+ -- Dorian Zedler <dorian@itsblue.de>  Thu, 21 Jan 2021 11:01:44 +0100
+
+linuxmuster-linbo-gui7 (0.6-0) lmn7-testing; urgency=low
+
+  * CodeCrafter912:
+    - Fix #16: Add timer to long operations.
+    - Fix #4: Multi language Support 
+    - New Design in backend
+
+ -- Dorian Zedler <dorian@itsblue.de>  Sat, 2 Jan 2021 11:01:44 +0100
+
+linuxmuster-linbo-gui7 (0.5-0) lmn7-testing; urgency=low
+
+  * CodeCrafter912:
+    - Fix #13: Problems with HTML parsing.
+    - Fix #11: When using minimal Layout, an OS can now be selected with hover and the default action can be executed with a double-click.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sat, 26 Dec 2020 15:58:34 +0100
+
+linuxmuster-linbo-gui7 (0.4-0) lmn7; urgency=low
+
+  * release 7.0.1-Alpha03-01
+    (https://github.com/linuxmuster/linuxmuster-linbo-gui/releases/tag/7.0.1-Alpha03-01).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 25 Dec 2020 15:25:47 +0100
+
+linuxmuster-linbo-gui7 (0.3-0) lmn7; urgency=low
+
+  * release 7.0.1-Alpha02 (https://github.com/linuxmuster/linuxmuster-linbo-gui/releases/tag/7.0.1-Alpha02).
+  * removed build.sh from rules file.
+  * exclude libs from gui archives which exist already in linbofs by
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sat, 19 Dec 2020 20:42:52 +0100
+
+linuxmuster-linbo-gui7 (0.2-0) lmn7; urgency=low
+
+  * first testing release based on tag 7.0.1-Alpha01-1.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 14 Dec 2020 18:56:25 +0100
+
+linuxmuster-linbo-gui7 (0.1-0) lmn7; urgency=low
+
+  * initial release.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 08 Dec 2020 15:32:22 +0100
