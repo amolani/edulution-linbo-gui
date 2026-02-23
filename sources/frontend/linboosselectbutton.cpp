@@ -238,9 +238,10 @@ void LinboOsSelectButton::resizeEvent(QResizeEvent *event) {
     int pad = h * 0.15;
     int iconSize = h - pad * 2;
     int gap = h * 0.153;
-    int pillH = std::max(16, (int)(h * 0.44));
+    int pillH = std::max(16, (int)(h * 0.374));
     int pillY = (h - pillH) / 2;
     int pillSpacing = std::max(4, (int)(h * 0.06));
+    int textToPillGap = std::max(8, (int)(h * 0.491));
 
     // Transparent button covers entire card
     this->_button->setGeometry(0, 0, w, h);
@@ -257,53 +258,46 @@ void LinboOsSelectButton::resizeEvent(QResizeEvent *event) {
         return std::max(pill->minimumWidth() + 10, pillH * 2);
     };
 
-    // Position all pills right-to-left from right edge
-    // Start pills and root pills share same area (only one set visible)
-    int x;
-    int rightPad = pad * 2; // generous right margin so pill border isn't clipped
-
-    // Start action pills: [...secondary ghost pills...] [primary solid pill]
-    x = w - rightPad;
-    for(int i = this->_startActionButtons.size() - 1; i >= 0; i--) {
-        int pillW = calcPillWidth(this->_startActionButtons[i]);
-        x -= pillW;
-        this->_startActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
-        x -= pillSpacing;
-    }
-    if(this->_primaryStartPill) {
-        int pillW = calcPillWidth(this->_primaryStartPill);
-        x -= pillW;
-        this->_primaryStartPill->setGeometry(x, pillY, pillW, pillH);
-        x -= pillSpacing;
-    }
-    int startLeftEdge = x;
-
-    // Root action pills (same area, positioned independently)
-    x = w - rightPad;
-    for(int i = this->_rootActionButtons.size() - 1; i >= 0; i--) {
-        int pillW = calcPillWidth(this->_rootActionButtons[i]);
-        x -= pillW;
-        this->_rootActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
-        x -= pillSpacing;
-    }
-    if(this->_primaryRootPill) {
-        int pillW = calcPillWidth(this->_primaryRootPill);
-        x -= pillW;
-        this->_primaryRootPill->setGeometry(x, pillY, pillW, pillH);
-        x -= pillSpacing;
-    }
-    int rootLeftEdge = x;
-
-    // Label: from icon right edge to pill left edge
+    // Label: position after icon, measure text width
     int iconX = pad;
     int labelX = iconX + iconSize + gap;
-    int pillsLeftEdge = std::min(startLeftEdge, rootLeftEdge);
-    int labelW = std::max(0, pillsLeftEdge - labelX);
 
-    this->_osNameLabel->setGeometry(labelX, 0, labelW, h);
     QFont nameFont = this->_osNameLabel->font();
     nameFont.setPixelSize(gTheme->toFontSize(h * 0.26));
     this->_osNameLabel->setFont(nameFont);
+
+    QFontMetrics nameFm(nameFont);
+    int textW = nameFm.horizontalAdvance(this->_osNameLabel->text()) + pillSpacing;
+    int labelW = std::min(textW, w - labelX - pad);
+    this->_osNameLabel->setGeometry(labelX, 0, labelW, h);
+
+    // Position pills left-to-right directly after the label text
+    int x = labelX + labelW + textToPillGap;
+
+    // Start action pills: [primary solid pill] [...secondary ghost pills...]
+    if(this->_primaryStartPill) {
+        int pillW = calcPillWidth(this->_primaryStartPill);
+        this->_primaryStartPill->setGeometry(x, pillY, pillW, pillH);
+        x += pillW + pillSpacing;
+    }
+    for(int i = 0; i < this->_startActionButtons.size(); i++) {
+        int pillW = calcPillWidth(this->_startActionButtons[i]);
+        this->_startActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
+        x += pillW + pillSpacing;
+    }
+
+    // Root action pills (same area, positioned independently)
+    x = labelX + labelW + textToPillGap;
+    if(this->_primaryRootPill) {
+        int pillW = calcPillWidth(this->_primaryRootPill);
+        this->_primaryRootPill->setGeometry(x, pillY, pillW, pillH);
+        x += pillW + pillSpacing;
+    }
+    for(int i = 0; i < this->_rootActionButtons.size(); i++) {
+        int pillW = calcPillWidth(this->_rootActionButtons[i]);
+        this->_rootActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
+        x += pillW + pillSpacing;
+    }
 
     this->_updateActionButtonVisibility();
 }
