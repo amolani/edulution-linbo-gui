@@ -25,6 +25,7 @@
 #include <QBoxLayout>
 #include <QFont>
 #include <QFontDatabase>
+#include <QFontInfo>
 #include <QScreen>
 #include <QMainWindow>
 #include <QTranslator>

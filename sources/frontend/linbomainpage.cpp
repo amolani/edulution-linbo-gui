@@ -113,13 +113,12 @@ LinboMainPage::LinboMainPage(LinboBackend* backend, QWidget *parent) : QWidget(p
     footerLayout->setContentsMargins(footerMargins, 0, footerMargins, 0);
     footerLayout->setSpacing(this->width() * 0.015);
 
-    QLabel* footerInfoLabel = new QLabel(backend->config()->linboVersion() + " \xC2\xB7 " + this->_backend->config()->ipAddress());
+    QLabel* footerInfoLabel = new QLabel(backend->config()->linboVersion());
     QFont footerFont;
     footerFont.setPixelSize(gTheme->size(LinboTheme::RowFontSize) * 0.8);
     footerInfoLabel->setFont(footerFont);
-    footerInfoLabel->setStyleSheet(QString("QLabel { color: %1; }").arg(gTheme->textAt(77).name(QColor::HexArgb)));
+    footerInfoLabel->setStyleSheet(QString("QLabel { color: %1; }").arg(gTheme->textAt(160).name(QColor::HexArgb)));
     footerLayout->addWidget(footerInfoLabel);
-
     footerLayout->addStretch();
 
     int footerButtonSize = this->height() * 0.0525;
@@ -217,7 +216,7 @@ LinboMainPage::LinboMainPage(LinboBackend* backend, QWidget *parent) : QWidget(p
 
     this->_updateCacheDialog = new LinboUpdateCacheDialog(backend, parent);
     this->_allDialogs.append(this->_updateCacheDialog);
-    this->_updateCacheDialog->setGeometry(0, 0, dialogWidth * 0.5, dialogHeight * 0.3);
+    this->_updateCacheDialog->setGeometry(0, 0, dialogWidth * 0.5, dialogHeight * 0.45);
     this->_updateCacheDialog->centerInParent();
     connect(this->_adminSidebar, &LinboAdminSidebar::cacheUpdateRequested,
             this->_updateCacheDialog, &LinboUpdateCacheDialog::open);
@@ -279,9 +278,8 @@ void LinboMainPage::paintEvent(QPaintEvent *event) {
         // SVG aspect ratio ~841.9:228.4 ≈ 3.69:1
         int logoW = logoH * 841.9 / 228.4;
         int margin = this->height() * 0.025;
-        painter.setOpacity(0.5);
-        this->_edulutionLogoRenderer->render(&painter, QRectF(this->width() - logoW - margin, margin, logoW, logoH));
         painter.setOpacity(1.0);
+        this->_edulutionLogoRenderer->render(&painter, QRectF(this->width() - logoW - margin, margin, logoW, logoH));
     }
 }
 

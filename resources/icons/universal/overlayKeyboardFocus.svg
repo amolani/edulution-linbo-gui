@@ -56,14 +56,14 @@
      id="layer1"
      style="display:inline">
     <rect
-       style="opacity:0.97000002;fill:#f59c00;fill-opacity:1;stroke:none;stroke-width:1.20700312;stroke-linecap:round;stroke-miterlimit:3.70000005;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0;fill:none;stroke:none"
        id="rect816"
        width="132.29167"
        height="5.2916665"
        x="0"
        y="127" />
     <rect
-       style="display:inline;opacity:0.97000002;fill:#2a4457;fill-opacity:1;stroke:none;stroke-width:1.20700312;stroke-linecap:round;stroke-miterlimit:3.70000005;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0;fill:none;stroke:none"
        id="rect816-3"
        width="132.29167"
        height="5.2916665"

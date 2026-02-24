@@ -189,7 +189,7 @@ void LinboClientInfoDrawer::paintEvent(QPaintEvent* event) {
     // No background — completely transparent
 
     // Font setup
-    int fontPx = qMax(8, rowH * 42 / 100);
+    int fontPx = qMax(8, rowH * 50 / 100);
     QFont labelFont;
     labelFont.setPixelSize(gTheme->toFontSize(fontPx));
     labelFont.setBold(false);
@@ -238,7 +238,7 @@ void LinboClientInfoDrawer::paintEvent(QPaintEvent* event) {
             // Dot separator
             if(i > 0) {
                 p.setFont(dotFont);
-                p.setPen(gTheme->textAt(30));
+                p.setPen(gTheme->textAt(36));
                 p.drawText(QRect(currentX, lineY, sepW, rowH), Qt::AlignVCenter, sep);
                 currentX += sepW;
             }
@@ -247,14 +247,14 @@ void LinboClientInfoDrawer::paintEvent(QPaintEvent* event) {
             QString labelStr = item.label + ": ";
             int labelW = labelFm.horizontalAdvance(labelStr);
             p.setFont(labelFont);
-            p.setPen(gTheme->textAt(70));
+            p.setPen(gTheme->textAt(84));
             p.drawText(QRect(currentX, lineY, labelW, rowH), Qt::AlignVCenter, labelStr);
             currentX += labelW;
 
             // Value — no eliding, draw full text
             int valW = valueFm.horizontalAdvance(item.value);
             p.setFont(valueFont);
-            p.setPen(gTheme->textAt(140));
+            p.setPen(gTheme->textAt(168));
             p.drawText(QRect(currentX, lineY, valW, rowH), Qt::AlignVCenter, item.value);
             currentX += valW;
         }

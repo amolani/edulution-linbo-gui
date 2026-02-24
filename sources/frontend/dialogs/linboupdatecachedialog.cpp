@@ -27,6 +27,10 @@ LinboUpdateCacheDialog::LinboUpdateCacheDialog(LinboBackend* backend, QWidget* p
 
     this->_mainLayout = new QVBoxLayout(this);
 
+    // --- Section: Transfer method ---
+    this->_methodLabel = new QLabel(QStringLiteral("ÜBERTRAGUNGSMETHODE"));
+    this->_mainLayout->addWidget(this->_methodLabel);
+
     this->_updateTypeButtonGroup = new QButtonGroup(this);
 
     //% "Update using rsync"
@@ -47,26 +51,34 @@ LinboUpdateCacheDialog::LinboUpdateCacheDialog(LinboBackend* backend, QWidget* p
     this->_mainLayout->addWidget(torrentButton);
     this->_updateTypeButtonGroup->addButton(torrentButton, int(LinboConfig::Torrent));
 
-    QFrame* separatorLine = new QFrame();
-    separatorLine->setStyleSheet(gTheme->insertValues("QFrame {color: %LineColor;}"));
-    separatorLine->setFrameShape(QFrame::HLine);
-    this->_mainLayout->addWidget(separatorLine);
+    // --- Section: Advanced ---
+    this->_advancedLabel = new QLabel(QStringLiteral("ERWEITERT"));
+    this->_mainLayout->addWidget(this->_advancedLabel);
 
     //% "Format cache partition"
     _formatCheckBox = new LinboCheckBox(qtTrId("dialog_updateCache_formatPartition"));
     this->_mainLayout->addWidget(_formatCheckBox);
 
+    this->_formatWarning = new QLabel(QStringLiteral("Achtung: Löscht alle gecachten Images"));
+    this->_formatWarning->setVisible(false);
+    this->_mainLayout->addWidget(this->_formatWarning);
+    connect(this->_formatCheckBox, &QCheckBox::toggled, this->_formatWarning, &QLabel::setVisible);
+
     this->_mainLayout->addStretch();
 
-    //% "update"
-    LinboToolButton* toolButtonCache = new LinboToolButton(qtTrId("dialog_updateCache_button_update"));
-    this->addToolButton(toolButtonCache);
-    connect(toolButtonCache, &LinboToolButton::clicked, this, &LinboUpdateCacheDialog::_updateCache);
-
+    // --- Bottom toolbar: Cancel (ghost) left, Update (primary) right ---
     //% "cancel"
-    toolButtonCache = new LinboToolButton(qtTrId("cancel"));
-    this->addToolButton(toolButtonCache);
-    connect(toolButtonCache, &LinboToolButton::clicked, this, &LinboUpdateCacheDialog::autoClose);
+    LinboToolButton* cancelButton = new LinboToolButton(qtTrId("cancel"));
+    cancelButton->setPillColor(QColor("#0081c6"));
+    cancelButton->setGhostPill(true);
+    this->addToolButton(cancelButton);
+    connect(cancelButton, &LinboToolButton::clicked, this, &LinboUpdateCacheDialog::autoClose);
+
+    //% "update"
+    LinboToolButton* updateButton = new LinboToolButton(qtTrId("dialog_updateCache_button_update"));
+    updateButton->setPillColor(QColor("#0081c6"));
+    this->addToolButton(updateButton);
+    connect(updateButton, &LinboToolButton::clicked, this, &LinboUpdateCacheDialog::_updateCache);
 }
 
 void LinboUpdateCacheDialog::_updateCache() {
@@ -78,17 +90,44 @@ void LinboUpdateCacheDialog::resizeEvent(QResizeEvent *event) {
     LinboDialog::resizeEvent(event);
 
     int margins = gTheme->size(LinboTheme::Margins);
+    int rowHeight = gTheme->size(LinboTheme::RowHeight);
+    int rowFontSize = gTheme->size(LinboTheme::RowFontSize);
+    int padding = gTheme->size(LinboTheme::RowPaddingSize);
 
-    this->_mainLayout->setContentsMargins(margins, margins, margins, margins);
-    for(int i = 0; i < 5; i++) {
-        if(i == 3)
-            // skip line
-            continue;
+    this->_mainLayout->setContentsMargins(padding, margins, padding, padding);
+    this->_mainLayout->setSpacing(padding);
 
-        QAbstractButton* button = static_cast<QAbstractButton*>(this->_mainLayout->itemAt(i)->widget());
-        button->setFixedSize(this->width() - margins * 2, gTheme->size(LinboTheme::RowHeight));
-        QFont buttonFont = button->font();
-        buttonFont.setPixelSize(gTheme->size(LinboTheme::RowFontSize));
+    // Section labels — dim white, uppercase, small, bold
+    QFont sectionFont;
+    sectionFont.setPixelSize(std::max(8, rowFontSize * 7 / 10));
+    sectionFont.setBold(true);
+    sectionFont.setLetterSpacing(QFont::AbsoluteSpacing, 1);
+
+    this->_methodLabel->setFont(sectionFont);
+    this->_methodLabel->setStyleSheet(QString("color: %1;").arg(gTheme->textAt(120).name(QColor::HexArgb)));
+
+    this->_advancedLabel->setFont(sectionFont);
+    this->_advancedLabel->setStyleSheet(QString("color: %1;").arg(gTheme->textAt(120).name(QColor::HexArgb)));
+    this->_advancedLabel->setContentsMargins(0, margins, 0, 0);
+
+    // Radio buttons + checkbox
+    QFont buttonFont;
+    buttonFont.setPixelSize(rowFontSize);
+    int contentWidth = this->width() - padding * 2;
+
+    for(QAbstractButton* button : this->_updateTypeButtonGroup->buttons()) {
+        button->setFixedSize(contentWidth, rowHeight);
         button->setFont(buttonFont);
     }
+
+    this->_formatCheckBox->setFixedSize(contentWidth, rowHeight);
+    this->_formatCheckBox->setFont(buttonFont);
+
+    // Warning label — orange, italic, smaller, indented under checkbox text
+    QFont warningFont;
+    warningFont.setPixelSize(std::max(8, rowFontSize * 3 / 4));
+    warningFont.setItalic(true);
+    this->_formatWarning->setFont(warningFont);
+    this->_formatWarning->setStyleSheet("color: #e65100;");
+    this->_formatWarning->setContentsMargins(rowFontSize + 6, 0, 0, 0);
 }

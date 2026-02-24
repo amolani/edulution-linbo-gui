@@ -29,6 +29,7 @@ void LinboCheckBox::paintEvent(QPaintEvent *e) {
             QString(
                 "QCheckBox {"
                 "    color: %TextColor;"
+                "    spacing: 6px;"
                 "}"
                 "QCheckBox::indicator {"
                 "    width: %1px;"

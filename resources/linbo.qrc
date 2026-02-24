@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
+        <file>fonts/Lato-Regular.ttf</file>
+        <file>fonts/Lato-Bold.ttf</file>
+        <file>fonts/Lato-Italic.ttf</file>
+        <file>fonts/Lato-BoldItalic.ttf</file>
+        <file>fonts/Lato-Light.ttf</file>
         <file>fonts/PTSans-Bold.ttf</file>
         <file>fonts/PTSans-BoldItalic.ttf</file>
         <file>fonts/PTSans-Italic.ttf</file>

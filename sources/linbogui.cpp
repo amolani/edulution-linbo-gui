@@ -40,11 +40,16 @@ LinboGui::LinboGui()
 #endif
 
     // Load Lato font (primary)
-    QFontDatabase::addApplicationFont(":/fonts/Lato-Regular.ttf");
+    int latoOk = QFontDatabase::addApplicationFont(":/fonts/Lato-Regular.ttf");
     QFontDatabase::addApplicationFont(":/fonts/Lato-Bold.ttf");
     QFontDatabase::addApplicationFont(":/fonts/Lato-Italic.ttf");
     QFontDatabase::addApplicationFont(":/fonts/Lato-BoldItalic.ttf");
     QFontDatabase::addApplicationFont(":/fonts/Lato-Light.ttf");
+
+    if(latoOk < 0)
+        qWarning() << "FONT LOAD FAILED: Lato not loaded from resources!";
+    else
+        qDebug() << "Lato font loaded, families:" << QFontDatabase::applicationFontFamilies(latoOk);
 
     // Load PTSans font (fallback)
     QFontDatabase::addApplicationFont(":/fonts/PTSans-Bold.ttf");
@@ -58,8 +63,14 @@ LinboGui::LinboGui()
     QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R.ttf");
     QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI.ttf");
 
-    QFont defaultFont ("Lato");
+    QFont defaultFont("Lato");
+    defaultFont.setStyleStrategy(QFont::PreferAntialias);
     QApplication::setFont(defaultFont);
+
+    // Verify resolved font
+    QFont resolvedFont = QApplication::font();
+    qDebug() << "Default font set to:" << resolvedFont.family() << "| actually resolved:"
+             << QFontInfo(resolvedFont).family();
 
     // some debug logs
     qDebug() << "Display width: " << this->width() << " height: " << this->height();

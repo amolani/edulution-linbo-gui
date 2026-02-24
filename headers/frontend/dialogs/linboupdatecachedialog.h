@@ -26,6 +26,7 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QButtonGroup>
+#include <QLabel>
 
 #include "linbodialog.h"
 #include "linbopushbutton.h"
@@ -47,6 +48,9 @@ private:
     QButtonGroup* _updateTypeButtonGroup;
     QVBoxLayout* _mainLayout;
     LinboCheckBox* _formatCheckBox;
+    QLabel* _methodLabel;
+    QLabel* _advancedLabel;
+    QLabel* _formatWarning;
 
 private slots:
     void _updateCache();

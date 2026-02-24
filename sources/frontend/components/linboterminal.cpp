@@ -11,7 +11,7 @@ LinboTerminal::LinboTerminal(QWidget* parent) : QTextEdit(parent)
         "QTextEdit {"
         "   border: none;"
         "   border-radius: 4px;"
-        "   background: #0a0a0a;"
+        "   background: rgba(6, 8, 10, 230);"
         "   padding: 8px;"
         "   color: #8FC046;"
         "   selection-background-color: #1a3a1a;"
@@ -21,7 +21,7 @@ LinboTerminal::LinboTerminal(QWidget* parent) : QTextEdit(parent)
 
     this->verticalScrollBar()->setStyleSheet(
         "QScrollBar:vertical {"
-        "    background: #0a0a0a;"
+        "    background: rgba(6, 8, 10, 230);"
         "    width: 6px;"
         "    margin: 4px 0;"
         "    border-radius: 3px;"

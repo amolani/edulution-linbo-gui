@@ -69,7 +69,7 @@ void LinboDialog::_initOpacityEffectForWidget(QWidget* widget) {
 
 void LinboDialog::_initToolbar() {
     this->_titleLabel = new QLabel(this->objectName());
-    this->_titleLabel->setAlignment(Qt::AlignCenter);
+    this->_titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     this->_closeButton = new LinboToolButton(LinboTheme::CancelIcon);
     connect(this->_closeButton, &LinboToolButton::clicked, this, &LinboDialog::autoClose);
     connect(this->_closeButton, &LinboToolButton::clicked, this, &LinboDialog::closedByUser);
@@ -86,7 +86,7 @@ void LinboDialog::_initToolbar() {
     this->_toolBarLayout = new QHBoxLayout(this->_toolBarWidget);
     this->_toolBarLayout->setContentsMargins(0,0,0,0);
     this->_toolBarLayout->addWidget(this->_titleLabel);
-    this->_toolBarLayout->setAlignment(this->_titleLabel, Qt::AlignCenter);
+    this->_toolBarLayout->setAlignment(this->_titleLabel, Qt::AlignLeft | Qt::AlignVCenter);
     this->_toolBarLayout->addStretch();
     this->_toolBarLayout->addWidget(this->_closeButton);
     this->_toolBarLayout->setAlignment(this->_closeButton, Qt::AlignCenter);

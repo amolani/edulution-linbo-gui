@@ -27,10 +27,13 @@
 #include <QProcess>
 #include <QScrollBar>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <QPainter>
+#include <QPainterPath>
 
 #include "linbodialog.h"
 #include "linboterminal.h"
+#include "linbotoolbutton.h"
 
 class LinboTerminalDialog : public LinboDialog
 {
@@ -44,6 +47,7 @@ protected:
 
 private:
     LinboTerminal* _terminal;
+    LinboToolButton* _termCloseButton;
 
 };
 
