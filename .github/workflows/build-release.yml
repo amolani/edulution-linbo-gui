@@ -1,0 +1,48 @@
+name: Build and Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y debhelper build-essential
+
+      - name: Pull build container
+        run: docker pull ghcr.io/linuxmuster/linuxmuster-linbo-gui-build
+
+      - name: Build .deb package
+        run: ./build.sh
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp ../edulution-linbo-gui7_* dist/ 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deb-package
+          path: dist/*
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: deb-package
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: '*.deb'
+          generate_release_notes: true

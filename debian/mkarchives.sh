@@ -9,7 +9,7 @@
 src_dir="$(pwd)"
 deb_dir="$src_dir/debian"
 build_dir="$src_dir/build"
-arc_dir="$deb_dir/linuxmuster-linbo-gui7/srv/linbo"
+arc_dir="$deb_dir/edulution-linbo-gui7/srv/linbo"
 initramfs_base_url="https://raw.githubusercontent.com/linuxmuster/linuxmuster-linbo/master/conf"
 tmp_dir="$deb_dir/tmp.$$"
 

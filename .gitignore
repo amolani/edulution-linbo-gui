@@ -1,6 +1,6 @@
 CMakeLists.txt.user*
 build/
-debian/linuxmuster-linbo-gui7
+debian/edulution-linbo-gui7
 debian/tmp.*
 /*.json
 .vscode

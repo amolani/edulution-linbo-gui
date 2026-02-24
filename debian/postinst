@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        # APT-Pin: Verhindert dass linuxmuster-linbo-gui7 installiert wird
+        cat > /etc/apt/preferences.d/edulution-linbo-gui << 'EOF'
+# Installed by edulution-linbo-gui7
+Package: linuxmuster-linbo-gui7
+Pin: release *
+Pin-Priority: -1
+EOF
+        # linbofs rebuild triggern falls verfügbar
+        if command -v update-linbofs >/dev/null 2>&1; then
+            update-linbofs || true
+        fi
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
