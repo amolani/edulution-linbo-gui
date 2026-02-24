@@ -73,5 +73,6 @@
         <file>icons/universal/overlayKeyboardFocus.svg</file>
         <file>icons/universal/lock.svg</file>
         <file>images/edulution_logo.png</file>
+        <file>images/background.png</file>
     </qresource>
 </RCC>

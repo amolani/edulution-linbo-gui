@@ -27,6 +27,7 @@
 #include <QProcess>
 #include <QScrollBar>
 #include <QKeyEvent>
+#include <QPainter>
 
 #include "linbodialog.h"
 #include "linboterminal.h"
@@ -39,6 +40,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     LinboTerminal* _terminal;

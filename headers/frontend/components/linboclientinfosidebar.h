@@ -57,17 +57,17 @@ private:
     bool _pressed;
 };
 
-// Glass drawer panel showing host details
+// Horizontal bottom bar showing host details
 class LinboClientInfoDrawer : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(int slideX READ slideX WRITE setSlideX)
+    Q_PROPERTY(int slideY READ slideY WRITE setSlideY)
 
 public:
     LinboClientInfoDrawer(LinboConfig* config, QWidget* parent = nullptr);
 
-    int slideX() const { return _slideX; }
-    void setSlideX(int x);
+    int slideY() const { return _slideY; }
+    void setSlideY(int y);
 
     void toggle();
     void resizeToParent();
@@ -78,8 +78,8 @@ protected:
 
 private:
     QList<LinboInfoRow> _rows;
-    int _slideX;
-    int _panelWidth;
+    int _slideY;
+    int _panelHeight;
     QPropertyAnimation* _slideAnimation;
     bool _open;
 };

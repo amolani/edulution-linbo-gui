@@ -45,9 +45,9 @@ LinboMainPage::LinboMainPage(LinboBackend* backend, QWidget *parent) : QWidget(p
     mainLayout->addSpacerItem(new QSpacerItem(this->width(), mainLayout->spacing()));
 
     // Header: LINBO text + subtitle
-    QWidget* headerWidget = new QWidget();
-    headerWidget->setAttribute(Qt::WA_TranslucentBackground);
-    QVBoxLayout* headerLayout = new QVBoxLayout(headerWidget);
+    this->_headerWidget = new QWidget();
+    this->_headerWidget->setAttribute(Qt::WA_TranslucentBackground);
+    QVBoxLayout* headerLayout = new QVBoxLayout(this->_headerWidget);
     headerLayout->setContentsMargins(0, 0, 0, 0);
     headerLayout->setSpacing(2);
 
@@ -61,11 +61,20 @@ LinboMainPage::LinboMainPage(LinboBackend* backend, QWidget *parent) : QWidget(p
     this->_titleLabel->setAlignment(Qt::AlignCenter);
     headerLayout->addWidget(this->_titleLabel);
 
+    QLabel* subtitleLabel = new QLabel("by linuxmuster.net");
+    QFont subtitleFont;
+    subtitleFont.setPixelSize(this->height() * 0.016);
+    subtitleFont.setLetterSpacing(QFont::AbsoluteSpacing, 1.0);
+    subtitleLabel->setFont(subtitleFont);
+    subtitleLabel->setStyleSheet(QString("QLabel { color: %1; }").arg(gTheme->textAt(70).name(QColor::HexArgb)));
+    subtitleLabel->setAlignment(Qt::AlignCenter);
+    headerLayout->addWidget(subtitleLabel);
+
     // Load edulution logo for top-right branding
     this->_edulutionLogoRenderer = new QSvgRenderer(QString(":/images/edulution_logo.svg"), this);
 
-    mainLayout->addWidget(headerWidget);
-    mainLayout->setAlignment(headerWidget, Qt::AlignCenter);
+    mainLayout->addWidget(this->_headerWidget);
+    mainLayout->setAlignment(this->_headerWidget, Qt::AlignCenter);
 
     mainLayout->addStretch();
 
@@ -223,26 +232,46 @@ void LinboMainPage::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    // Edulution Dark Mode: near-black base with subtle blue-gray gradient
-    QLinearGradient baseGrad(0, 0, this->width(), this->height());
-    baseGrad.setColorAt(0.0, QColor("#0a0a0a"));
-    baseGrad.setColorAt(0.5, QColor("#0d1117"));
-    baseGrad.setColorAt(1.0, QColor("#0a0f14"));
-    painter.fillRect(this->rect(), baseGrad);
+    // Dark background with soft diagonal gradient (anti-banding via upscale)
+    int w = this->width();
+    int h = this->height();
 
-    if(!gTheme->lowFxMode()) {
-        // Subtle Edulution Blue glow top-right
-        QRadialGradient meshBlue(this->width() * 0.85, this->height() * 0.1, this->width() * 0.6);
-        meshBlue.setColorAt(0.0, QColor(0, 129, 198, 12));
-        meshBlue.setColorAt(1.0, QColor(0, 129, 198, 0));
-        painter.fillRect(this->rect(), meshBlue);
+    static QPixmap cachedBg;
+    static QSize cachedSize;
 
-        // Subtle green glow bottom-left
-        QRadialGradient meshGreen(this->width() * 0.15, this->height() * 0.9, this->width() * 0.5);
-        meshGreen.setColorAt(0.0, QColor(143, 192, 70, 8));
-        meshGreen.setColorAt(1.0, QColor(143, 192, 70, 0));
-        painter.fillRect(this->rect(), meshGreen);
+    if(cachedBg.isNull() || cachedSize != this->size()) {
+        // Paint gradient at small size, then scale up — smooths out banding
+        int smallW = 64;
+        int smallH = 64;
+        QImage small(smallW, smallH, QImage::Format_RGB32);
+        QPainter sp(&small);
+
+        sp.fillRect(small.rect(), QColor(12, 12, 12));
+
+        if(!gTheme->lowFxMode()) {
+            QLinearGradient wave(smallW, 0, 0, smallH);
+            wave.setSpread(QGradient::PadSpread);
+            wave.setColorAt(0.00, QColor(22, 22, 22));
+            wave.setColorAt(0.08, QColor(20, 20, 20));
+            wave.setColorAt(0.18, QColor(15, 15, 15));
+            wave.setColorAt(0.28, QColor(20, 20, 20));
+            wave.setColorAt(0.38, QColor(15, 15, 15));
+            wave.setColorAt(0.48, QColor(21, 21, 21));
+            wave.setColorAt(0.58, QColor(14, 14, 14));
+            wave.setColorAt(0.68, QColor(19, 19, 19));
+            wave.setColorAt(0.78, QColor(14, 14, 14));
+            wave.setColorAt(0.88, QColor(20, 20, 20));
+            wave.setColorAt(1.00, QColor(18, 18, 18));
+            sp.fillRect(small.rect(), wave);
+        }
+        sp.end();
+
+        // Scale up with smooth bilinear filtering — eliminates banding
+        cachedBg = QPixmap::fromImage(small.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        cachedSize = this->size();
     }
+
+    painter.drawPixmap(0, 0, cachedBg);
 
     // Edulution logo, top-right, subtle
     if(this->_edulutionLogoRenderer && this->_edulutionLogoRenderer->isValid()) {
@@ -300,10 +329,14 @@ void LinboMainPage::_handleLinboStateChanged(LinboBackend::LinboState newState) 
         break;
 
     default:
-        osSelectionRowHeight = this->height() * 0.2;
+        osSelectionRowHeight = this->height() * 0.3;
         startActionsWidgetHeight = this->height() * 0.2;
         break;
     }
+
+    // Hide header during actions, show in idle/root states
+    bool headerVisible = (newState == LinboBackend::Idle || newState == LinboBackend::Root);
+    this->_headerWidget->setVisible(headerVisible);
 
     for(LinboPushButton* powerActionButton : this->_powerActionButtons)
         if(powerActionButton == _logoutActionButton && newState < LinboBackend::Root)

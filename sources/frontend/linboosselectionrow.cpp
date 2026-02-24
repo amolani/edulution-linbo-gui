@@ -116,8 +116,9 @@ void LinboOsSelectionRow::_resizeAndPositionAllButtons(int heightOverride, int w
                 }
                 else {
                     visible = true;
-                    int singularWidth = std::min(buttonWidth, (int)(heightOverride * 1.5));
-                    geometry = QRect((widthOverride - singularWidth) / 2, (heightOverride - buttonHeight) / 2, singularWidth, buttonHeight);
+                    int singularH = std::min((int)(heightOverride * 0.6), buttonHeight * 2);
+                    int singularWidth = std::min((int)(widthOverride * 0.5), (int)(singularH * 3.5));
+                    geometry = QRect((widthOverride - singularWidth) / 2, (heightOverride - singularH) / 2, singularWidth, singularH);
                 }
 
                 if(this->_inited) {
@@ -164,8 +165,9 @@ void LinboOsSelectionRow::_resizeAndPositionAllButtons(int heightOverride, int w
                 }
                 else {
                     visible = true;
-                    int singularWidth = std::min(buttonWidth, (int)(heightOverride * 1.5));
-                    geometry = QRect((widthOverride - singularWidth) / 2, (heightOverride - buttonHeight) / 2, singularWidth, buttonHeight);
+                    int singularH = std::min((int)(heightOverride * 0.6), buttonHeight * 2);
+                    int singularWidth = std::min((int)(widthOverride * 0.5), (int)(singularH * 3.5));
+                    geometry = QRect((widthOverride - singularWidth) / 2, (heightOverride - singularH) / 2, singularWidth, singularH);
                 }
 
                 if(this->_inited) {

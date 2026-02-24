@@ -341,8 +341,18 @@ QString LinboOsSelectButton::_getTooltipContentForAction(LinboOs::LinboOsStartAc
 void LinboOsSelectButton::_updateActionButtonVisibility(bool doNotAnimate) {
     Q_UNUSED(doNotAnimate)
 
-    bool startVisible = this->_shouldBeVisible && this->_backend->state() < LinboBackend::Root;
-    bool rootVisible = this->_shouldBeVisible && this->_backend->state() >= LinboBackend::Root;
+    LinboBackend::LinboState state = this->_backend->state();
+
+    // Hide all pills during active operations
+    bool isActiveAction = (state == LinboBackend::Autostarting ||
+                           state == LinboBackend::Starting ||
+                           state == LinboBackend::Syncing ||
+                           state == LinboBackend::Reinstalling ||
+                           state == LinboBackend::CreatingImage ||
+                           state == LinboBackend::UploadingImage);
+
+    bool startVisible = this->_shouldBeVisible && state < LinboBackend::Root && !isActiveAction;
+    bool rootVisible = this->_shouldBeVisible && state >= LinboBackend::Root && !isActiveAction;
 
     // Primary pills
     if(this->_primaryStartPill)

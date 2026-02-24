@@ -64,6 +64,7 @@ private:
     LinboPushButton* _logoutActionButton;
     QList<LinboPushButton*> _powerActionButtons;
 
+    QWidget* _headerWidget;
     QLabel* _titleLabel;
     QSvgRenderer* _edulutionLogoRenderer;
 

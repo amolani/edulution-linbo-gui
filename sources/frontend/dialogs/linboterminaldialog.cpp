@@ -31,5 +31,42 @@ void LinboTerminalDialog::resizeEvent(QResizeEvent *event) {
     LinboDialog::resizeEvent(event);
 
     int margins = gTheme->size(LinboTheme::Margins);
-    this->_terminal->setGeometry(margins, margins, this->width() - 2 * margins, this->height() - 2 * margins);
+    int headerHeight = margins * 2;
+    this->_terminal->setGeometry(margins, margins + headerHeight, this->width() - 2 * margins, this->height() - 2 * margins - headerHeight);
+}
+
+void LinboTerminalDialog::paintEvent(QPaintEvent *event) {
+    LinboDialog::paintEvent(event);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    int margins = gTheme->size(LinboTheme::Margins);
+    int headerHeight = margins * 2;
+
+    // Green accent line at top of terminal area
+    painter.setPen(QPen(QColor(143, 192, 70, 40), 1));
+    painter.drawLine(margins, margins + headerHeight - 1, this->width() - margins, margins + headerHeight - 1);
+
+    // Green dot indicator
+    int dotSize = headerHeight * 0.35;
+    int dotY = margins + (headerHeight - dotSize) / 2;
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(143, 192, 70, 180));
+    painter.drawEllipse(margins + 2, dotY, dotSize, dotSize);
+
+    // "Terminal" label
+    QFont labelFont("Ubuntu Mono");
+    labelFont.setPixelSize(headerHeight * 0.5);
+    painter.setFont(labelFont);
+    painter.setPen(QColor(143, 192, 70, 153));
+    int textX = margins + 2 + dotSize + margins * 0.5;
+    int textY = margins;
+    painter.drawText(textX, textY, this->width() / 2, headerHeight, Qt::AlignVCenter | Qt::AlignLeft, "Terminal");
+
+    // "root@linbo" right-aligned
+    painter.setPen(QColor(143, 192, 70, 100));
+    painter.drawText(this->width() / 2, textY, this->width() / 2 - margins, headerHeight, Qt::AlignVCenter | Qt::AlignRight, "root@linbo");
+
+    Q_UNUSED(event)
 }

@@ -91,13 +91,13 @@ void LinboInfoIndicator::leaveEvent(QEvent* event) {
 
 LinboClientInfoDrawer::LinboClientInfoDrawer(LinboConfig* config, QWidget* parent)
     : QWidget(parent),
-    _slideX(0),
-    _panelWidth(260),
+    _slideY(0),
+    _panelHeight(44),
     _open(false)
 {
     setAttribute(Qt::WA_TranslucentBackground);
 
-    // Network rows
+    // Row 1: Network info
     //% "Hostname"
     _rows.append({qtTrId("hostname"), config->hostname(), false});
     //% "Host group"
@@ -107,39 +107,50 @@ LinboClientInfoDrawer::LinboClientInfoDrawer(LinboConfig* config, QWidget* paren
     //% "Mac"
     _rows.append({qtTrId("client_info_mac"), config->macAddress(), false});
 
-    // Hardware rows (separator before first)
+    // Row 2: Hardware info (isSeparator=true marks start of second row)
     //% "HDD"
     _rows.append({qtTrId("client_info_hdd"), config->diskSize(), true});
     //% "CPU"
     _rows.append({qtTrId("client_info_cpu"), config->cpuModel(), false});
-    //% "RAM"
-    _rows.append({qtTrId("client_info_ram"), config->ramSize(), false});
 
-    _slideAnimation = new QPropertyAnimation(this, "slideX");
+    // RAM: convert MB to GB
+    QString ramStr = config->ramSize();
+    bool ok = false;
+    double ramMb = ramStr.split(" ").first().toDouble(&ok);
+    QString ramDisplay = ok ? QString::number(ramMb / 1024.0, 'f', 1) + " GB" : ramStr;
+    //% "RAM"
+    _rows.append({qtTrId("client_info_ram"), ramDisplay, false});
+
+    _slideAnimation = new QPropertyAnimation(this, "slideY");
     _slideAnimation->setDuration(250);
     _slideAnimation->setEasingCurve(QEasingCurve::InOutQuad);
 
     this->setVisible(false);
 }
 
-void LinboClientInfoDrawer::setSlideX(int x) {
-    _slideX = x;
-    this->move(_slideX, this->y());
+void LinboClientInfoDrawer::setSlideY(int y) {
+    _slideY = y;
+    this->move(this->x(), _slideY);
 }
 
 void LinboClientInfoDrawer::toggle() {
+    if(!parentWidget()) return;
+    int parentH = parentWidget()->height();
+    int footerH = parentH * 7 / 100;
+    int targetY = parentH - footerH - _panelHeight;
+
     _slideAnimation->stop();
 
     if(!_open) {
         _open = true;
         this->setVisible(true);
-        _slideAnimation->setStartValue(-_panelWidth);
-        _slideAnimation->setEndValue(0);
+        _slideAnimation->setStartValue(parentH);
+        _slideAnimation->setEndValue(targetY);
         _slideAnimation->start();
     } else {
         _open = false;
-        _slideAnimation->setStartValue(_slideX);
-        _slideAnimation->setEndValue(-_panelWidth);
+        _slideAnimation->setStartValue(_slideY);
+        _slideAnimation->setEndValue(parentH);
         connect(_slideAnimation, &QPropertyAnimation::finished, this, [this]() {
             if(!_open)
                 this->setVisible(false);
@@ -155,12 +166,14 @@ void LinboClientInfoDrawer::resizeToParent() {
     int parentH = parentWidget()->height();
     int parentW = parentWidget()->width();
 
-    _panelWidth = qBound(220, parentW * 20 / 100, 300);
-    int panelH = parentH * 55 / 100;
-    int panelY = (parentH - panelH) / 2;
+    _panelHeight = qBound(40, parentH * 6 / 100, 64);
 
-    int x = _open ? 0 : -_panelWidth;
-    this->setGeometry(x, panelY, _panelWidth, panelH);
+    // Position above the footer (footer = 7% height + small margin)
+    int footerH = parentH * 7 / 100;
+    int targetY = parentH - footerH - _panelHeight;
+
+    int y = _open ? targetY : parentH;
+    this->setGeometry(0, y, parentW, _panelHeight);
 }
 
 void LinboClientInfoDrawer::paintEvent(QPaintEvent* event) {
@@ -170,89 +183,81 @@ void LinboClientInfoDrawer::paintEvent(QPaintEvent* event) {
 
     int w = this->width();
     int h = this->height();
-    int pad = w * 7 / 100;
-    int radius = 14;
+    int padX = w * 5 / 100;
+    int rowH = h / 2;
 
-    // Glass panel background
-    QPainterPath panelPath;
-    panelPath.addRoundedRect(QRectF(0, 0, w, h), radius, radius);
-    p.setClipPath(panelPath);
+    // No background — completely transparent
 
-    // Dark glass fill
-    p.fillRect(rect(), QColor(10, 14, 20, 220));
-
-    // Subtle border
-    p.setClipping(false);
-    p.setPen(QPen(QColor(255, 255, 255, 20), 1));
-    p.setBrush(Qt::NoBrush);
-    p.drawRoundedRect(QRectF(0.5, 0.5, w - 1, h - 1), radius, radius);
-
-    // Title
-    int titleFontPx = qMax(10, h * 4 / 100);
-    QFont titleFont;
-    titleFont.setPixelSize(gTheme->toFontSize(titleFontPx));
-    titleFont.setBold(true);
-    titleFont.setLetterSpacing(QFont::AbsoluteSpacing, 1.5);
-    p.setFont(titleFont);
-    p.setPen(gTheme->textAt(200));
-
-    int titleY = pad;
-    int titleH = titleFontPx + 4;
-    QRect titleRect(pad, titleY, w - 2 * pad, titleH);
-    p.drawText(titleRect, Qt::AlignVCenter | Qt::AlignLeft, "CLIENT INFO");
-
-    // Divider under title
-    int divY = titleY + titleH + pad / 2;
-    p.setPen(QPen(QColor(255, 255, 255, 20), 1));
-    p.drawLine(pad, divY, w - pad, divY);
-
-    // Rows
-    int rowStartY = divY + pad / 2;
-    int availH = h - rowStartY - pad;
-    int rowCount = _rows.count();
-    int rowH = qMin(availH / qMax(rowCount, 1), h * 10 / 100);
-    int labelFontPx = qMax(8, rowH * 34 / 100);
-    int valueFontPx = qMax(8, rowH * 36 / 100);
-
+    // Font setup
+    int fontPx = qMax(8, rowH * 42 / 100);
     QFont labelFont;
-    labelFont.setPixelSize(gTheme->toFontSize(labelFontPx));
+    labelFont.setPixelSize(gTheme->toFontSize(fontPx));
     labelFont.setBold(false);
 
     QFont valueFont;
-    valueFont.setPixelSize(gTheme->toFontSize(valueFontPx));
+    valueFont.setPixelSize(gTheme->toFontSize(fontPx));
     valueFont.setBold(true);
 
-    int contentX = pad;
-    int contentW = w - 2 * pad;
-    int currentY = rowStartY;
+    QFont dotFont;
+    dotFont.setPixelSize(gTheme->toFontSize(fontPx));
 
-    for(int i = 0; i < rowCount; i++) {
-        const auto& row = _rows[i];
+    QFontMetrics labelFm(labelFont);
+    QFontMetrics valueFm(valueFont);
+    QFontMetrics dotFm(dotFont);
 
-        // Draw separator line before hardware section
-        if(row.isSeparator) {
-            int sepY = currentY + 2;
-            p.setPen(QPen(QColor(255, 255, 255, 15), 1));
-            p.drawLine(contentX, sepY, contentX + contentW, sepY);
-            currentY += pad / 2;
+    QString sep = QString("  \u00b7  ");
+    int sepW = dotFm.horizontalAdvance(sep);
+
+    // Split rows into two lines: isSeparator=true starts line 2
+    QList<QList<LinboInfoRow>> lines;
+    lines.append(QList<LinboInfoRow>());
+    for(const auto& row : _rows) {
+        if(row.isSeparator)
+            lines.append(QList<LinboInfoRow>());
+        lines.last().append(row);
+    }
+
+    for(int line = 0; line < lines.count(); line++) {
+        const auto& items = lines[line];
+        int lineY = line * rowH;
+
+        // Calculate total width for centering
+        int totalW = 0;
+        for(int i = 0; i < items.count(); i++) {
+            totalW += labelFm.horizontalAdvance(items[i].label + ": ");
+            totalW += valueFm.horizontalAdvance(items[i].value);
+            if(i < items.count() - 1)
+                totalW += sepW;
         }
 
-        int halfRow = rowH / 2;
+        int currentX = qMax(padX, (w - totalW) / 2);
 
-        // Label (dim, smaller)
-        p.setFont(labelFont);
-        p.setPen(gTheme->textAt(90));
-        QRect labelRect(contentX, currentY, contentW, halfRow);
-        p.drawText(labelRect, Qt::AlignBottom | Qt::AlignLeft, row.label);
+        for(int i = 0; i < items.count(); i++) {
+            const auto& item = items[i];
 
-        // Value (bright, bold)
-        p.setFont(valueFont);
-        p.setPen(gTheme->textAt(210));
-        QRect valueRect(contentX, currentY + halfRow, contentW, halfRow);
-        QString elidedValue = QFontMetrics(valueFont).elidedText(row.value, Qt::ElideRight, contentW);
-        p.drawText(valueRect, Qt::AlignTop | Qt::AlignLeft, elidedValue);
+            // Dot separator
+            if(i > 0) {
+                p.setFont(dotFont);
+                p.setPen(gTheme->textAt(30));
+                p.drawText(QRect(currentX, lineY, sepW, rowH), Qt::AlignVCenter, sep);
+                currentX += sepW;
+            }
 
-        currentY += rowH;
+            // Label
+            QString labelStr = item.label + ": ";
+            int labelW = labelFm.horizontalAdvance(labelStr);
+            p.setFont(labelFont);
+            p.setPen(gTheme->textAt(70));
+            p.drawText(QRect(currentX, lineY, labelW, rowH), Qt::AlignVCenter, labelStr);
+            currentX += labelW;
+
+            // Value — no eliding, draw full text
+            int valW = valueFm.horizontalAdvance(item.value);
+            p.setFont(valueFont);
+            p.setPen(gTheme->textAt(140));
+            p.drawText(QRect(currentX, lineY, valW, rowH), Qt::AlignVCenter, item.value);
+            currentX += valW;
+        }
     }
 }
 
@@ -295,11 +300,12 @@ void LinboClientInfoSidebar::resizeToParent() {
 
     int parentH = parentWidget()->height();
 
-    // Position indicator: left edge, vertically centered
+    // Position indicator: bottom-left corner
     int indicatorSize = qMax(24, parentH * 4 / 100);
     _indicator->setFixedSize(indicatorSize, indicatorSize);
-    int indicatorX = parentH * 1 / 100;
-    int indicatorY = (parentH - indicatorSize) / 2;
+    int margin = parentH * 1 / 100;
+    int indicatorX = margin;
+    int indicatorY = parentH - indicatorSize - margin;
     _indicator->move(indicatorX, indicatorY);
 
     _drawer->resizeToParent();

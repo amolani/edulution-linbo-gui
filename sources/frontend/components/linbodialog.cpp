@@ -181,10 +181,10 @@ void LinboDialog::paintEvent(QPaintEvent *e) {
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(Qt::NoPen);
     painter.setBrush(QColor("#111111"));
-    painter.drawRect(this->rect());
-    painter.setPen(QPen(QColor("#333333"), 1));
+    painter.drawRoundedRect(this->rect(), 6, 6);
+    painter.setPen(QPen(QColor(255, 255, 255, 20), 1));
     painter.setBrush(Qt::NoBrush);
-    painter.drawRect(this->rect().adjusted(0, 0, -1, -1));
+    painter.drawRoundedRect(this->rect().adjusted(0, 0, -1, -1), 6, 6);
 
     Q_UNUSED(e)
 }
