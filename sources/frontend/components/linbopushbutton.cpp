@@ -268,7 +268,7 @@ void LinboPushButton::paintEvent(QPaintEvent *e) {
         painter.setRenderHint(QPainter::Antialiasing);
 
         int h = this->height();
-        int radius = h / 2;
+        int radius = qMax(4, h * 3 / 10);
         QRectF pillRect = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
 
         if(this->_ghostPill) {
