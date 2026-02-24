@@ -10,10 +10,6 @@ Package: linuxmuster-linbo-gui7
 Pin: release *
 Pin-Priority: -1
 EOF
-        # linbofs rebuild triggern falls verfügbar
-        if command -v update-linbofs >/dev/null 2>&1; then
-            update-linbofs || true
-        fi
         ;;
 esac
 
