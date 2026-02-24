@@ -66,19 +66,16 @@ LinboUpdateCacheDialog::LinboUpdateCacheDialog(LinboBackend* backend, QWidget* p
 
     this->_mainLayout->addStretch();
 
-    // --- Bottom toolbar: Cancel (ghost) left, Update (primary) right ---
-    //% "cancel"
-    LinboToolButton* cancelButton = new LinboToolButton(qtTrId("cancel"));
-    cancelButton->setPillColor(QColor("#0081c6"));
-    cancelButton->setGhostPill(true);
-    this->addToolButton(cancelButton);
-    connect(cancelButton, &LinboToolButton::clicked, this, &LinboUpdateCacheDialog::autoClose);
-
+    // --- Bottom toolbar: Update left, Cancel right (same order as all other dialogs) ---
     //% "update"
     LinboToolButton* updateButton = new LinboToolButton(qtTrId("dialog_updateCache_button_update"));
-    updateButton->setPillColor(QColor("#0081c6"));
     this->addToolButton(updateButton);
     connect(updateButton, &LinboToolButton::clicked, this, &LinboUpdateCacheDialog::_updateCache);
+
+    //% "cancel"
+    LinboToolButton* cancelButton = new LinboToolButton(qtTrId("cancel"));
+    this->addToolButton(cancelButton);
+    connect(cancelButton, &LinboToolButton::clicked, this, &LinboUpdateCacheDialog::autoClose);
 }
 
 void LinboUpdateCacheDialog::_updateCache() {
