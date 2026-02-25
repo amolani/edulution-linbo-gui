@@ -187,6 +187,11 @@ void LinboPushButton::setPillColor(const QColor& color) {
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     this->setAutoFillBackground(false);
     this->setStyleSheet("");
+    // Hide the QLabel to prevent double text rendering on framebuffer
+    if(this->_label) {
+        this->_label->setVisible(false);
+        this->_label->setGeometry(0, 0, 0, 0);
+    }
     for(LinboPushButtonOverlay* overlay : this->_overlays) {
         overlay->setVisible(false);
         if(overlay->_widget) {
