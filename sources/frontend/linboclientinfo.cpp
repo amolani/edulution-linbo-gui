@@ -83,9 +83,9 @@ void LinboClientInfo::resizeEvent(QResizeEvent *event) {
     this->_desktopIconWidget->setFixedSize(iconHeight, iconHeight);
 
     // set font size and glass-style label colors
-    // Labels 30% brighter (77→100), values 30% brighter (153→199)
-    QString keyColor = gTheme->textAt(100).name(QColor::HexArgb);
-    QString valueColor = gTheme->textAt(199).name(QColor::HexArgb);
+    // Labels brighter (77→120), values brighter (153→239)
+    QString keyColor = gTheme->textAt(120).name(QColor::HexArgb);
+    QString valueColor = gTheme->textAt(239).name(QColor::HexArgb);
     for(int i = 0; i < 10; i++) {
         // skip svg icons
         if(i == 0 || i == 5)
