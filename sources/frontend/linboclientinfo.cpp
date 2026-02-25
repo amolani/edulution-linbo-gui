@@ -86,12 +86,15 @@ void LinboClientInfo::resizeEvent(QResizeEvent *event) {
     // Labels brighter (77→120), values brighter (153→239)
     QString keyColor = gTheme->textAt(120).name(QColor::HexArgb);
     QString valueColor = gTheme->textAt(239).name(QColor::HexArgb);
-    for(int i = 0; i < 10; i++) {
+    int itemCount = this->_mainLayout->count();
+    for(int i = 0; i < itemCount; i++) {
         // skip svg icons
         if(i == 0 || i == 5)
             continue;
 
         QLayoutItem* labelItem = this->_mainLayout->itemAt(i);
+        if(!labelItem || !labelItem->widget())
+            continue;
 
         QLabel* label = static_cast<QLabel*>(labelItem->widget());
         label->setTextFormat(Qt::RichText);

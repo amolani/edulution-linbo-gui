@@ -214,6 +214,7 @@ void LinboConfigReader::_loadLinboConfigFromBlock(QMap<QString, QString> rawLinb
         else if(key == "guidisabled")   c->_guiDisabled = this->_stringToBool(value);
         else if(key == "clientdetailsvisiblebydefault") c->_clientDetailsVisibleByDefault = this->_stringToBool(value);
         else if(key == "theme") c->_themeName = value;
+        else this->_backend->logger()->info("Unknown [LINBO] field ignored: " + key);
     }
 }
 
@@ -228,6 +229,8 @@ void LinboConfigReader::_loadPartitionConfigFromBlock(QMap<QString, QString> raw
         else if(key == "id")        p->_id = value;
         else if(key == "fstype")    p->_fstype = value;
         else if(key == "bootable")  p->_bootable = _stringToBool(value);
+        else if(key == "label")     { /* label field, accepted */ }
+        else this->_backend->logger()->info("Unknown [Partition] field ignored: " + key);
     }
 
     if(p->path() != "")
@@ -263,10 +266,20 @@ void LinboConfigReader::_loadOsConfigFromBlock(QMap<QString, QString> rawOsConfi
                 config->_images.insert(value, new LinboImage(value, this->_backend));
             os->_setBaseImage(config->_images[value]);
         }
+        // Accept known but unused fields silently
+        else if(key == "image" || key == "restoreopsistate" || key == "forceopsisetup") { }
+        else this->_backend->logger()->info("Unknown [OS] field ignored: " + key);
     }
 
-    if(os->name() != "")
+    if(os->name() != "") {
+        // Validate: autostart requires a valid enabled defaultaction
+        if(os->_autostartEnabled && !os->actionEnabled(os->_defaultAction)) {
+            this->_backend->logger()->error(
+                "OS '" + os->name() + "': autostart=yes but defaultaction is disabled or invalid — autostart will not work");
+            os->_autostartEnabled = false;
+        }
         config->_operatingSystems.append(os);
+    }
     else
         os->deleteLater();
 

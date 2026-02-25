@@ -59,8 +59,10 @@ LinboOsSelectButton::LinboOsSelectButton(QString icon, LinboOs* os, LinboBackend
     };
 
     // Primary start pill (default action) - solid blue
+    // Hide pill entirely if no default action is enabled
     QString defaultLabel = actionLabels.value(this->_os->defaultAction(), "Start");
-    if(!this->_os->actionEnabled(this->_os->defaultAction()))
+    bool hasDefaultAction = this->_os->actionEnabled(this->_os->defaultAction());
+    if(!hasDefaultAction)
         defaultLabel = "";
 
     this->_primaryStartPill = new LinboPushButton("", defaultLabel, this);
@@ -273,30 +275,47 @@ void LinboOsSelectButton::resizeEvent(QResizeEvent *event) {
 
     // Position pills left-to-right directly after the label text
     int x = labelX + labelW + textToPillGap;
+    int maxX = w - pad;  // right boundary for pills
 
     // Start action pills: [primary solid pill] [...secondary ghost pills...]
     if(this->_primaryStartPill) {
         int pillW = calcPillWidth(this->_primaryStartPill);
-        this->_primaryStartPill->setGeometry(x, pillY, pillW, pillH);
-        x += pillW + pillSpacing;
+        if(x + pillW <= maxX) {
+            this->_primaryStartPill->setGeometry(x, pillY, pillW, pillH);
+            x += pillW + pillSpacing;
+        } else {
+            this->_primaryStartPill->setGeometry(0, 0, 0, 0);
+        }
     }
     for(int i = 0; i < this->_startActionButtons.size(); i++) {
         int pillW = calcPillWidth(this->_startActionButtons[i]);
-        this->_startActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
-        x += pillW + pillSpacing;
+        if(x + pillW <= maxX) {
+            this->_startActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
+            x += pillW + pillSpacing;
+        } else {
+            this->_startActionButtons[i]->setGeometry(0, 0, 0, 0);
+        }
     }
 
     // Root action pills (same area, positioned independently)
     x = labelX + labelW + textToPillGap;
     if(this->_primaryRootPill) {
         int pillW = calcPillWidth(this->_primaryRootPill);
-        this->_primaryRootPill->setGeometry(x, pillY, pillW, pillH);
-        x += pillW + pillSpacing;
+        if(x + pillW <= maxX) {
+            this->_primaryRootPill->setGeometry(x, pillY, pillW, pillH);
+            x += pillW + pillSpacing;
+        } else {
+            this->_primaryRootPill->setGeometry(0, 0, 0, 0);
+        }
     }
     for(int i = 0; i < this->_rootActionButtons.size(); i++) {
         int pillW = calcPillWidth(this->_rootActionButtons[i]);
-        this->_rootActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
-        x += pillW + pillSpacing;
+        if(x + pillW <= maxX) {
+            this->_rootActionButtons[i]->setGeometry(x, pillY, pillW, pillH);
+            x += pillW + pillSpacing;
+        } else {
+            this->_rootActionButtons[i]->setGeometry(0, 0, 0, 0);
+        }
     }
 
     this->_updateActionButtonVisibility();
@@ -354,9 +373,10 @@ void LinboOsSelectButton::_updateActionButtonVisibility(bool doNotAnimate) {
     bool startVisible = this->_shouldBeVisible && state < LinboBackend::Root && !isActiveAction;
     bool rootVisible = this->_shouldBeVisible && state >= LinboBackend::Root && !isActiveAction;
 
-    // Primary pills
+    // Primary pills — also hide if no default action is enabled (empty label)
+    bool hasDefault = this->_os->actionEnabled(this->_os->defaultAction());
     if(this->_primaryStartPill)
-        this->_primaryStartPill->setVisible(startVisible && this->_showDefaultAction);
+        this->_primaryStartPill->setVisible(startVisible && this->_showDefaultAction && hasDefault);
     if(this->_primaryRootPill)
         this->_primaryRootPill->setVisible(rootVisible && this->_showDefaultAction);
 

@@ -182,5 +182,8 @@ void LinboImageCreationDialog::_refreshPathAndDescription(bool isOpening) {
         }
     }
 
-    this->_imageDescriptionTextBrowser->setText(this->_targetOs->baseImage()->getDescription());
+    if(this->_targetOs->baseImage() != nullptr)
+        this->_imageDescriptionTextBrowser->setText(this->_targetOs->baseImage()->getDescription());
+    else
+        this->_imageDescriptionTextBrowser->setText("");
 }

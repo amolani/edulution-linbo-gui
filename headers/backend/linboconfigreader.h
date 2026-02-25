@@ -72,7 +72,7 @@ private:
 
 private:
     LinboBackend* _backend;
-    const QVector<QString> _trueWords = {"yes", "true", "enable"};
+    const QVector<QString> _trueWords = {"yes", "true", "enable", "enabled", "1", "on"};
 #ifdef TEST_ENV
     const QString _configFilePath = TEST_ENV"/start.conf";
     const QString _guiFileBasePath = TEST_ENV"/gui";

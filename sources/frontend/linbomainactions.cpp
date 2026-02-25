@@ -202,13 +202,16 @@ void LinboMainActions::_handleLinboStateChanged(LinboBackend::LinboState newStat
     case LinboBackend::StartActionError:
     case LinboBackend::RootActionError: {
         QList<LinboLogger::LinboLog> chaperLogs = this->_backend->logger()->logsOfCurrentChapter();
-        //% "The process %1 crashed:"
-        this->_messageLabel->setText(qtTrId("main_message_processCrashed").arg("\"" + chaperLogs[chaperLogs.length()-1].message + "\""));
         QString errorDetails;
-        if(chaperLogs.length() == 0)
+        if(chaperLogs.length() == 0) {
+            //% "The process %1 crashed:"
+            this->_messageLabel->setText(qtTrId("main_message_processCrashed").arg("\"?\""));
             //% "No logs before this crash"
             errorDetails = "<b>" + qtTrId("main_message_noLogs") + "</b>";
+        }
         else {
+            //% "The process %1 crashed:"
+            this->_messageLabel->setText(qtTrId("main_message_processCrashed").arg("\"" + chaperLogs[chaperLogs.length()-1].message + "\""));
             //% "The last logs before the crash were:"
             errorDetails = "<b>" + qtTrId("main_message_lastLogs") + "</b><br>";
             errorDetails += LinboLogger::logsToStacktrace(chaperLogs).join("<br>");

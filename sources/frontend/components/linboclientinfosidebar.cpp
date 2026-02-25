@@ -116,8 +116,12 @@ LinboClientInfoDrawer::LinboClientInfoDrawer(LinboConfig* config, QWidget* paren
     // RAM: convert MB to GB
     QString ramStr = config->ramSize();
     bool ok = false;
-    double ramMb = ramStr.split(" ").first().toDouble(&ok);
-    QString ramDisplay = ok ? QString::number(ramMb / 1024.0, 'f', 1) + " GB" : ramStr;
+    QString ramDisplay = ramStr;
+    QStringList ramParts = ramStr.split(" ");
+    if(!ramParts.isEmpty()) {
+        double ramMb = ramParts.first().toDouble(&ok);
+        if(ok) ramDisplay = QString::number(ramMb / 1024.0, 'f', 1) + " GB";
+    }
     //% "RAM"
     _rows.append({qtTrId("client_info_ram"), ramDisplay, false});
 
@@ -251,11 +255,13 @@ void LinboClientInfoDrawer::paintEvent(QPaintEvent* event) {
             p.drawText(QRect(currentX, lineY, labelW, rowH), Qt::AlignVCenter, labelStr);
             currentX += labelW;
 
-            // Value — no eliding, draw full text
-            int valW = valueFm.horizontalAdvance(item.value);
+            // Value — elide if exceeding available width
+            int availW = width() - currentX - 4;
+            QString displayValue = valueFm.elidedText(item.value, Qt::ElideRight, availW);
+            int valW = valueFm.horizontalAdvance(displayValue);
             p.setFont(valueFont);
             p.setPen(gTheme->textAt(168));
-            p.drawText(QRect(currentX, lineY, valW, rowH), Qt::AlignVCenter, item.value);
+            p.drawText(QRect(currentX, lineY, valW, rowH), Qt::AlignVCenter, displayValue);
             currentX += valW;
         }
     }

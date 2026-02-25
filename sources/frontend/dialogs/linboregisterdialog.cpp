@@ -114,8 +114,12 @@ void LinboRegisterDialog::resizeEvent(QResizeEvent *event) {
 
     this->_mainLayout->setContentsMargins(margins, margins, margins, margins);
 
-    for(int i = 0; i < 10; i++) {
-        QWidget* item = this->_mainLayout->itemAt(i)->widget();
+    int itemCount = this->_mainLayout->count();
+    for(int i = 0; i < itemCount; i++) {
+        QLayoutItem* layoutItem = this->_mainLayout->itemAt(i);
+        if(!layoutItem || !layoutItem->widget())
+            continue;
+        QWidget* item = layoutItem->widget();
 
         // make lables smaller
         if(i % 2 == 0)
