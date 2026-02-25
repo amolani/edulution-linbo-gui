@@ -32,9 +32,20 @@ LinboOsSelectionRow::LinboOsSelectionRow(LinboBackend* backend, QWidget *parent)
     this->_sizeAnimation->setDuration(100);
     this->_sizeAnimation->setEasingCurve(QEasingCurve::OutQuad);
 
+    int skippedHidden = 0;
+    int skippedOverflow = 0;
     for(LinboOs* os : backend->config()->operatingSystems()) {
-        if(this->_osButtons.length() >= 4)
-            break;
+        // Skip hidden OS entries
+        if(os->getHidden()) {
+            skippedHidden++;
+            qDebug() << "[GUI] Skipping hidden OS:" << os->name();
+            continue;
+        }
+
+        if(this->_osButtons.length() >= 4) {
+            skippedOverflow++;
+            continue;
+        }
 
 #ifdef TEST_ENV
         LinboOsSelectButton* osButton = new LinboOsSelectButton(TEST_ENV"/gui/icons/" + os->iconName(), os, backend, this);
@@ -46,6 +57,10 @@ LinboOsSelectionRow::LinboOsSelectionRow(LinboBackend* backend, QWidget *parent)
 
         this->_osButtons.append(osButton);
     }
+    if(skippedHidden > 0)
+        qDebug() << "[GUI]" << skippedHidden << "hidden OS entries skipped";
+    if(skippedOverflow > 0)
+        qWarning() << "[GUI] WARNING:" << skippedOverflow << "OS entries exceed the 4-OS display limit and are not shown";
 
     if(this->_osButtons.length() == 0) {
         //% "No Operating system configured in start.conf"
