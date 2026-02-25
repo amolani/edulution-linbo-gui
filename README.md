@@ -22,8 +22,8 @@ Enhanced boot interface for [LINBO](https://github.com/linuxmuster/linuxmuster-l
 Download the latest `.deb` from [Releases](https://github.com/edulution-io/edulution-linbo-gui/releases/latest) and install:
 
 ```bash
-wget https://github.com/edulution-io/edulution-linbo-gui/releases/latest/download/edulution-linbo-gui7_1.0.0_all.deb
-dpkg -i edulution-linbo-gui7_1.0.0_all.deb
+wget https://github.com/edulution-io/edulution-linbo-gui/releases/latest/download/edulution-linbo-gui7_1.1.0_all.deb
+dpkg -i edulution-linbo-gui7_1.1.0_all.deb
 ```
 
 The package automatically:
@@ -65,7 +65,7 @@ The `.deb` package is created in the parent directory.
 1. Update `debian/changelog` with the new version
 2. Update `GUI_VERSION` in `CMakeLists.txt`
 3. Commit and push
-4. Tag: `git tag v1.0.0 && git push origin --tags`
+4. Tag: `git tag v1.1.0 && git push origin --tags`
 5. GitHub Actions builds the `.deb` and creates a release
 
 ## Based on

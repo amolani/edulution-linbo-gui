@@ -1,3 +1,10 @@
+edulution-linbo-gui7 (1.1.0) stable; urgency=medium
+
+  * Version bump for proper upgrade support
+  * Fixes dpkg not upgrading over existing 1.0.0 installations
+
+ -- Edulution <info@edulution.io>  Tue, 25 Feb 2026 12:00:00 +0100
+
 edulution-linbo-gui7 (1.0.0) stable; urgency=medium
 
   * Initial release of Edulution LINBO GUI

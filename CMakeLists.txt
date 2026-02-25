@@ -25,7 +25,7 @@ find_package(Qt6 COMPONENTS LinguistTools)
 
 qt_add_executable(linbo_gui "")
 target_compile_definitions(linbo_gui PUBLIC
-    GUI_VERSION=\"1.0.0-edulution\"
+    GUI_VERSION=\"1.1.0-edulution\"
 )
 
 set(SOURCE_FILES
